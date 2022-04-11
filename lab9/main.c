@@ -5,6 +5,7 @@
 
 #define DIMENSION 10
 
+
 int** create_random_matrix() {
     int **matrix = (int**) malloc(DIMENSION * sizeof(int*));
     for(int i = 0; i < DIMENSION; i++) matrix[i] = (int*) malloc(DIMENSION * sizeof(int));
@@ -13,6 +14,7 @@ int** create_random_matrix() {
             matrix[i][j] = rand() % 9; // NOLINT(cert-msc50-cpp)
     return matrix;
 }
+
 
 int** create_diagonal_matrix() {
     int **matrix = (int**) malloc(DIMENSION * sizeof(int*));
@@ -23,14 +25,15 @@ int** create_diagonal_matrix() {
     return matrix;
 }
 
+
 void print_matrix(int** matrix) {
     for (int i = 0; i < DIMENSION; ++i) {
-        for (int j = 0; j < DIMENSION; ++j) {
+        for (int j = 0; j < DIMENSION; ++j)
             printf("%3d ", matrix[i][j]);
-        }
         printf("\n");
     }
 }
+
 
 int** multiply_two_matrices(int** A, int** B) {
     int **matrix = (int **) malloc(DIMENSION * sizeof(int *));
@@ -43,8 +46,9 @@ int** multiply_two_matrices(int** A, int** B) {
             for (k = 0; k < DIMENSION; ++k)
                 matrix[i][j] += A[i][k] * B[k][j];
     return matrix;
-
 }
+
+
 int** multiply_two_diagonal_matrices(int** A, int** B) {
     int **matrix = (int **) malloc(DIMENSION * sizeof(int *));
     for (int i = 0; i < DIMENSION; i++) matrix[i] = (int *) malloc(DIMENSION * sizeof(int));
@@ -57,11 +61,13 @@ int** multiply_two_diagonal_matrices(int** A, int** B) {
     return matrix;
 }
 
+
 void free_matrix(int** matrix) {
     for (int i = 0; i < DIMENSION; ++i)
         free(matrix[i]);
     free(matrix);
 }
+
 
 int main() {
     double start_time = omp_get_wtime();
