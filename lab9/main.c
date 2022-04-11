@@ -76,12 +76,14 @@ int main() {
 
     int** A = create_diagonal_matrix();
     int** B = create_diagonal_matrix();
+    int** product = multiply_two_diagonal_matrices(A, B);
+
     print_matrix(A);
     printf("\n");
     print_matrix(B);
     printf("\n");
-    int** product = multiply_two_diagonal_matrices(A, B);
     print_matrix(product);
+
     free_matrix(A);
     free_matrix(B);
     free_matrix(product);
