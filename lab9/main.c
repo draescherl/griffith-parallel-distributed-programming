@@ -19,10 +19,7 @@ int** create_diagonal_matrix() {
     for(int i = 0; i < DIMENSION; i++) matrix[i] = (int*) malloc(DIMENSION * sizeof(int));
     for (int i = 0; i < DIMENSION; ++i)
         for (int j = 0; j < DIMENSION; ++j)
-            if (i == j)
-                matrix[i][j] = (rand() % 8) + 1; // NOLINT(cert-msc50-cpp)
-            else
-                matrix[i][j] = 0;
+            matrix[i][j] = (i == j) ? (rand() % 8) + 1 : 0;  // NOLINT(cert-msc50-cpp)
     return matrix;
 }
 
@@ -56,10 +53,7 @@ int** multiply_two_diagonal_matrices(int** A, int** B) {
 #pragma omp parallel for private(i, j) shared(matrix, A, B) collapse(2) default(none)
     for (i = 0; i < DIMENSION; ++i)
         for (j = 0; j < DIMENSION; ++j)
-            if (i == j)
-                matrix[i][j] = A[i][j] * B[i][j];
-            else
-                matrix[i][j] = 0;
+            matrix[i][j] = (i == j) ? A[i][j] * B[i][j] : 0;
     return matrix;
 }
 
