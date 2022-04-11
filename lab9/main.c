@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
+
+// ulimit -s unlimited
 
 #define DIMENSION 1000
 
@@ -23,18 +26,28 @@ void print_matrix(int** matrix) {
 }
 
 int** multiply_two_matrices(int** A, int** B) {
-    int **matrix = (int**) malloc(DIMENSION * sizeof(int*));
-    for(int i = 0; i < DIMENSION; i++) matrix[i] = (int*) malloc(DIMENSION * sizeof(int));
-    for (int i = 0; i < DIMENSION; ++i)
-        for (int j = 0; j < DIMENSION; ++j)
-            for (int k = 0; k < DIMENSION; ++k)
+    int **matrix = (int **) malloc(DIMENSION * sizeof(int *));
+    for (int i = 0; i < DIMENSION; i++) matrix[i] = (int *) malloc(DIMENSION * sizeof(int));
+
+    int i, j, k;
+#pragma omp parallel for private(i, j, k) shared(matrix, A, B) default(none)
+    for (i = 0; i < DIMENSION; ++i)
+        for (j = 0; j < DIMENSION; ++j)
+            for (k = 0; k < DIMENSION; ++k)
                 matrix[i][j] += A[i][k] * B[k][j];
     return matrix;
 }
 
+void free_matrix(int*** matrix) {
+    for (int i = 0; i < DIMENSION; ++i) free(*matrix[i]);
+    printf("done\n");
+    free(*matrix);
+}
+
 int main() {
-    clock_t begin = clock();
+    double start_time = omp_get_wtime();
     srand(time(NULL)); // NOLINT(cert-msc51-cpp)
+    omp_set_num_threads(omp_get_num_procs());
 
     int** A = create_random_matrix();
     int** B = create_random_matrix();
@@ -45,13 +58,11 @@ int main() {
     int** product = multiply_two_matrices(A, B);
 //    print_matrix(product);
 
-    for (int i = 0; i < DIMENSION; ++i) free(A[i]);
-    free(A);
-    for (int i = 0; i < DIMENSION; ++i) free(B[i]);
-    free(B);
-    for (int i = 0; i < DIMENSION; ++i) free(product[i]);
-    free(product);
+//    free_matrix(&A);
+//    free_matrix(&B);
+//    free_matrix(&product);
 
-    printf("Time elapsed: %.2f ms.\n", (double) (clock() - begin) / CLOCKS_PER_SEC * 1000);
+    double run_time = omp_get_wtime() - start_time;
+    printf("Run time = %.2f s.\n", run_time);
     return 0;
 }
