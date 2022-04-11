@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define DIMENSION 4
+#define DIMENSION 1000
 
 int** create_random_matrix() {
     int **matrix = (int**) malloc(DIMENSION * sizeof(int*));
@@ -38,12 +38,19 @@ int main() {
 
     int** A = create_random_matrix();
     int** B = create_random_matrix();
-    print_matrix(A);
-    printf("--------\n");
-    print_matrix(B);
-    printf("--------\n");
+//    print_matrix(A);
+//    printf("--------\n");
+//    print_matrix(B);
+//    printf("--------\n");
     int** product = multiply_two_matrices(A, B);
-    print_matrix(product);
+//    print_matrix(product);
+
+    for (int i = 0; i < DIMENSION; ++i) free(A[i]);
+    free(A);
+    for (int i = 0; i < DIMENSION; ++i) free(B[i]);
+    free(B);
+    for (int i = 0; i < DIMENSION; ++i) free(product[i]);
+    free(product);
 
     printf("Time elapsed: %.2f ms.\n", (double) (clock() - begin) / CLOCKS_PER_SEC * 1000);
     return 0;
